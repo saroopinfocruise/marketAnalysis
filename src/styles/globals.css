@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import theme files */
+@import "./themes/base.css";
+@import "./themes/vahan.css";
+@import "./themes/dark.css";
+
+@layer base {
+    body {
+        @apply font-sans text-gray-800 bg-white;
+    }
+
+    h1 {
+        @apply text-h1;
+    }
+    h2 {
+        @apply text-h2;
+    }
+    h3 {
+        @apply text-h3;
+    }
+    h4 {
+        @apply text-h4;
+    }
+    h5 {
+        @apply text-h5;
+    }
+    h6 {
+        @apply text-h6 uppercase;
+    }
+    p {
+        @apply text-p text-gray-700;
+    }
+    a {
+        @apply text-blue-600 hover:underline;
+    }
+}

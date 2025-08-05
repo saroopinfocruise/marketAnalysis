@@ -1,0 +1,10 @@
+/* dark.css */
+[data-dark="true"] {
+    --color-bg: #0f172a;
+    --color-text: #f9fafb;
+}
+
+[data-dark="true"][data-theme="vaahan"] {
+    --color-bg: #022c43;
+    --color-text: #cfd8dc;
+}

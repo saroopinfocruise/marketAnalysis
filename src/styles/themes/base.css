@@ -1,0 +1,16 @@
+/* src/styles/themes/base.css */
+:root {
+    --color-primary: #225796;
+    --color-preferredMaker: #e8ffe4;
+    --color-competitorMaker: #fff8f8;
+    --color-someGray: #5a5f65;
+    --color-leaderBoardGreen: #58a942;
+    --color-leaderBoardBlue: #0a84ff;
+    --color-leaderBoardOrange: #f89920;
+    --color-leaderBoardRed: #ff543e;
+}
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: "Inter", sans-serif;
+}

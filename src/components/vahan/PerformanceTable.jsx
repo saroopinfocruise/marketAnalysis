@@ -2,27 +2,54 @@ import Image from "next/image";
 import PerformanceTableLegendHeader from "./PerformanceTableLegendHeader";
 
 const PerformanceTable = ({ rtoDynamicData, legendHeaderTitle }) => {
-    // const [preferredMaker, setPreferredMaker] = useState("Mahindra"); // default brand
     const preferredMaker = "Mahindra";
-    const allBrands = Object.keys(rtoDynamicData.totals);
 
-    // Move preferred brand to the first column dynamically
+    // ✅ Extract all brands dynamically
+    const allBrands = Array.from(
+        new Set(
+            rtoDynamicData.flatMap((item) =>
+                item.brandsCount.map((b) => Object.keys(b)[0])
+            )
+        )
+    );
+
+    // ✅ Move preferred brand to first
     const sortedBrands = [
         preferredMaker,
         ...allBrands.filter((brand) => brand !== preferredMaker),
     ];
+
+    // ✅ Convert rows into flat structure {rto, brand1: count, brand2: count...}
+    const flattenedRows = rtoDynamicData.map((item) => {
+        const rowObj = { rto: item.rto };
+        item.brandsCount.forEach((b) => {
+            const brand = Object.keys(b)[0];
+            rowObj[brand] = b[brand];
+        });
+        return rowObj;
+    });
+
+    // ✅ Calculate totals
+    const totals = {};
+    sortedBrands.forEach((brand) => {
+        totals[brand] = flattenedRows.reduce(
+            (sum, row) => sum + (row[brand] || 0),
+            0
+        );
+    });
+
     return (
         <div className="shadow-custom bg-white">
             <PerformanceTableLegendHeader>
                 <>
-                    {"RTO-Wise - Retails Performance for the"}
+                    {"RTO-Wise - Retails Performance for the "}
                     <span className="font-bold">{legendHeaderTitle}</span>
                 </>
             </PerformanceTableLegendHeader>
-            <div className="overflow-x-auto ">
+            <div className="overflow-x-auto">
                 <table className="min-w-full border border-gray-300">
                     {/* Table Header */}
-                    <thead className="">
+                    <thead>
                         <tr>
                             <th className="border p-2 text-left"></th>
                             {sortedBrands.map((brand, index) => (
@@ -38,7 +65,7 @@ const PerformanceTable = ({ rtoDynamicData, legendHeaderTitle }) => {
                                                     alt={brand}
                                                     width={50}
                                                     height={50}
-                                                    className="mx-auto text-xs"
+                                                    className="mx-auto text-xs object-contain"
                                                 />
                                             </div>
                                         </div>
@@ -67,13 +94,13 @@ const PerformanceTable = ({ rtoDynamicData, legendHeaderTitle }) => {
                                             : "bg-competitorMaker"
                                     }`}
                                 >
-                                    {rtoDynamicData.totals[brand]}
+                                    {totals[brand]}
                                 </td>
                             ))}
                         </tr>
 
                         {/* Data Rows */}
-                        {rtoDynamicData.rows.map((row, rowIndex) => (
+                        {flattenedRows.map((row, rowIndex) => (
                             <tr key={rowIndex} className="hover:bg-gray-50">
                                 <td className="border p-4">{row.rto}</td>
                                 {sortedBrands.map((brand, colIndex) => (
@@ -85,7 +112,7 @@ const PerformanceTable = ({ rtoDynamicData, legendHeaderTitle }) => {
                                                 : "bg-competitorMaker"
                                         }`}
                                     >
-                                        {row[brand]}
+                                        {row[brand] || 0}
                                     </td>
                                 ))}
                             </tr>
